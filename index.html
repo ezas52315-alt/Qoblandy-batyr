@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Қобланды батыр жыры - 5 сынып</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            /* Өте қою жасыл фон */
+            background-color: #01120d; 
+            background-image: radial-gradient(circle at 50% 0%, #032b20 0%, #01120d 70%, #000000 100%);
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            background-attachment: fixed;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 40px; /* Титр үшін орын */
+        }
+
+        h1, h2, h3, .futuristic-title {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .gold-text {
+            color: #fbbf24;
+            text-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+        }
+        
+        .futuristic-white {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.6), 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .gold-border {
+            border: 1px solid #fbbf24;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.2), inset 0 0 10px rgba(251, 191, 36, 0.1);
+        }
+
+        .glass-panel {
+            background: rgba(4, 59, 44, 0.45);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        .tab-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 2px;
+            background-color: #fbbf24;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .tab-btn.active {
+            color: #fbbf24;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+            background: linear-gradient(to top, rgba(251, 191, 36, 0.15), transparent);
+        }
+        .tab-btn.active::after {
+            transform: scaleX(1);
+        }
+        .tab-btn:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .cube-scene {
+            /* Куб көлемі үлкейтілді */
+            width: 320px;
+            height: 320px;
+            perspective: 1200px;
+            margin: 60px auto;
+        }
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: translateZ(-160px);
+            animation: spinCube 20s infinite linear;
+        }
+        .cube-scene:hover .cube {
+            animation-play-state: paused;
+        }
+        .cube__face {
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            background: rgba(2, 36, 27, 0.9);
+            border: 2px solid #fbbf24;
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.5), inset 0 0 25px rgba(251, 191, 36, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 12px #fbbf24;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            padding: 1.5rem;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .cube__face:hover {
+            background: rgba(4, 59, 44, 0.98);
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.9), inset 0 0 40px rgba(251, 191, 36, 0.5);
+            transform: scale(1.08);
+        }
+        
+        /* Куб қырларының орналасуы (160px = 320/2) */
+        .cube__face--front  { transform: rotateY(  0deg) translateZ(160px); }
+        .cube__face--right  { transform: rotateY( 90deg) translateZ(160px); }
+        .cube__face--back   { transform: rotateY(180deg) translateZ(160px); }
+        .cube__face--left   { transform: rotateY(-90deg) translateZ(160px); }
+        .cube__face--top    { transform: rotateX( 90deg) translateZ(160px); }
+        .cube__face--bottom { transform: rotateX(-90deg) translateZ(160px); }
+
+        @keyframes spinCube {
+            0% { transform: translateZ(-160px) rotateX(0deg) rotateY(0deg); }
+            100% { transform: translateZ(-160px) rotateX(360deg) rotateY(360deg); }
+        }
+
+        .modal-overlay {
+            background: rgba(1, 18, 13, 0.96);
+            backdrop-filter: blur(15px);
+        }
+        
+        .poem-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .ticker-wrap {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            background: rgba(1, 18, 13, 0.95);
+            border-top: 1px solid rgba(251, 191, 36, 0.5);
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.5);
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            height: 40px;
+        }
+        .ticker {
+            display: flex;
+            white-space: nowrap;
+            animation: ticker 35s linear infinite;
+        }
+        .ticker-item {
+            display: inline-block;
+            padding: 0 3rem;
+            font-size: 1.1rem;
+            color: #fbbf24;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 5px rgba(251, 191, 36, 0.4);
+        }
+        .ticker-item::after {
+            content: "✦";
+            margin-left: 3rem;
+            color: #10b981;
+            opacity: 0.5;
+        }
+        @keyframes ticker {
+            0% { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #010a08; }
+        ::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <header class="glass-panel sticky top-0 z-50 border-b border-amber-500/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-shield-halved text-amber-400 text-3xl drop-shadow-[0_0_12px_rgba(251,191,36,0.9)]"></i>
+                <div>
+                    <h1 class="text-2xl font-bold futuristic-title futuristic-white tracking-wide">Қобланды батыр жыры</h1>
+                    <p class="text-emerald-300 text-sm font-semibold tracking-widest uppercase">Қазақ әдебиеті • 5-сынып</p>
+                </div>
+            </div>
+            
+            <nav class="flex justify-center gap-4">
+                <button onclick="switchTab('cube')" id="btn-cube" class="tab-btn active px-6 py-3 rounded text-sm font-bold uppercase tracking-widest text-slate-200">
+                    <i class="fa-solid fa-cube mr-2"></i>Кубизм тапсырмасы
+                </button>
+                <button onclick="switchTab('poem')" id="btn-poem" class="tab-btn px-6 py-3 rounded text-sm font-bold uppercase tracking-widest text-slate-200">
+                    <i class="fa-solid fa-scroll mr-2"></i>Жыр мәтіні
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 relative">
+        
+        <section id="tab-cube" class="block animate-fade-in relative min-h-[70vh] pb-16">
+            <div class="text-center mb-10 w-full">
+                <h2 class="text-4xl md:text-5xl futuristic-title gold-text mb-4 uppercase tracking-widest">"Кубизм" әдісі</h2>
+                <p class="text-emerald-200 text-lg max-w-3xl mx-auto bg-[#022c22]/50 p-4 rounded-xl border border-emerald-800/50">
+                    <span class="font-bold text-amber-400 uppercase mr-2">Жұптық жұмыс.</span> 
+                    Берілген мәтін үзіндісіндегі Қобыланды батырдың бейнесін талдау үшін қалқып тұрған кубтың қырларын басыңыз.
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-16 w-full max-w-6xl mx-auto">
+                
+                <!-- Батыр портреті -->
+                <div class="flex-shrink-0 w-80 md:w-[400px] relative group flex justify-center items-center">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIWyUVMlqh1QeOHscLBLPKEsTOsEmkeBCAAkh49dytuA&s=10" alt="Қобланды батыр" class="relative z-10 w-full h-auto transform transition-transform duration-700 group-hover:scale-105">
+                    <!-- Шеттерін фонға білдірмей сіңіру үшін жұмсақ ішкі көлеңке -->
+                    <div class="absolute inset-0 z-20 pointer-events-none" style="box-shadow: inset 0 0 60px 25px #01120d;"></div>
+                </div>
+
+                <!-- 3D Куб контейнері -->
+                <div class="cube-scene">
+                    <div class="cube" id="cubism-cube">
+                        <div class="cube__face cube__face--front" onclick="showCubeTask(1)">
+                            <i class="fa-solid fa-image mb-2 text-4xl opacity-80"></i>
+                            <span>1. Суретте</span>
+                        </div>
+                        <div class="cube__face cube__face--right" onclick="showCubeTask(2)">
+                            <i class="fa-solid fa-balance-scale mb-2 text-4xl opacity-80"></i>
+                            <span>2. Салыстыр</span>
+                        </div>
+                        <div class="cube__face cube__face--back" onclick="showCubeTask(3)">
+                            <i class="fa-solid fa-search mb-2 text-4xl opacity-80"></i>
+                            <span>3. Зертте</span>
+                        </div>
+                        <div class="cube__face cube__face--left" onclick="showCubeTask(4)">
+                            <i class="fa-solid fa-brain mb-2 text-4xl opacity-80"></i>
+                            <span>4. Талда</span>
+                        </div>
+                        <div class="cube__face cube__face--top" onclick="showCubeTask(5)">
+                            <i class="fa-solid fa-lightbulb mb-2 text-4xl opacity-80"></i>
+                            <span>5. Қолдан</span>
+                        </div>
+                        <div class="cube__face cube__face--bottom" onclick="showCubeTask(6)">
+                            <i class="fa-solid fa-gavel mb-2 text-4xl opacity-80"></i>
+                            <span>6. Дәлелде</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cube-modal" class="fixed inset-0 modal-overlay z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+                <div class="glass-panel p-10 rounded-3xl max-w-2xl w-full border-2 border-amber-400 transform scale-95 transition-transform duration-300 shadow-[0_0_50px_rgba(251,191,36,0.4)] relative" id="cube-modal-content">
+                    
+                    <div class="absolute -top-6 -left-6 w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center text-slate-900 font-black text-3xl shadow-[0_0_20px_rgba(251,191,36,0.8)] border-4 border-[#01120d]" id="cube-number">
+                        1
+                    </div>
+
+                    <h3 id="cube-title" class="text-3xl font-bold gold-text mb-4 futuristic-title border-b border-emerald-800 pb-4 mt-2">Тақырып</h3>
+                    <p id="cube-desc" class="text-2xl futuristic-white leading-relaxed mb-10 font-serif">Тапсырма мәтіні...</p>
+                    
+                    <div class="flex justify-end">
+                        <button onclick="closeCubeModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 px-10 rounded-xl transition-all shadow-[0_0_15px_rgba(251,191,36,0.5)] hover:shadow-[0_0_25px_rgba(251,191,36,0.8)] uppercase tracking-wider text-lg">
+                            Түсіндім
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-poem" class="hidden animate-fade-in">
+            <div class="max-w-5xl mx-auto glass-panel rounded-3xl p-8 md:p-14 gold-border shadow-[0_0_60px_rgba(4,59,44,0.8)] relative overflow-hidden">
+                
+                <!-- Декорация -->
+                <div class="absolute top-0 left-0 w-40 h-40 border-t-4 border-l-4 border-amber-500/30 rounded-tl-3xl m-6"></div>
+                <div class="absolute bottom-0 right-0 w-40 h-40 border-b-4 border-r-4 border-amber-500/30 rounded-br-3xl m-6"></div>
+                
+                <h2 class="text-5xl futuristic-title gold-text text-center mb-12 tracking-wide border-b border-emerald-800/50 pb-8">Қобланды батыр жыры</h2>
+                
+                <!-- Мәтін 2 бағанға бөлініп беріледі -->
+                <div class="columns-1 md:columns-2 gap-16 text-xl futuristic-white leading-loose font-serif poem-text">
+                    <p>Кешегі өткен заманда,<br>
+                    Дін мұсылман аманда,<br>
+                    Қарақыпшақ Қобыланды,<br>
+                    Атасы мұның Тоқтарбай,<br>
+                    Халықтан асқан болды бай.<br>
+                    Байлығында есеп жоқ,<br>
+                    ...Бай-кедейдің көңілі жай.</p>
+
+                    <p>Қыс қыстауы – Қараспан,<br>
+                    Қараспан көкке таласқан...<br>
+                    Сексенге жасы келгенше,<br>
+                    Бір бала көрмей Тоқтарбай,<br>
+                    Қайғыменен қан жұтып,<br>
+                    Ақылынан адасқан.<br>
+                    Тоқтарбайдың зарына,<br>
+                    Қалың Қыпшақ қайысқан.</p>
+
+                    <p>Әулие қоймай қыдырып,<br>
+                    Етегін шеге сыдырып,<br>
+                    Жеті пірге танысқан.<br>
+                    Әулиеге ат айтып,<br>
+                    Қорасанға қой айтып,<br>
+                    Қабыл болған тілегі,<br>
+                    Жарылғандай жүрегі.</p>
+
+                    <p>Аналықтай бәйбіше,<br>
+                    Елуге жасы келгенде,<br>
+                    «Көзімді ашпай дүниеден<br>
+                    Өтемін бе?» дегенде,<br>
+                    Сонда көрген арыстан –<br>
+                    Бір ұл, бір қыз атадан:<br>
+                    Қыздың аты Қарлығаш,<br>
+                    Қобыландыға қарындас...</p>
+
+                    <p>Алты жасқа келгенде,<br>
+                    Арыстан туған Қобылан,<br>
+                    Қазынадан қамқа киеді.<br>
+                    Өзімнің еншім болсын деп,<br>
+                    Тобылғы меңді тор атты,<br>
+                    Енші қылып мінеді.<br>
+                    Қобыландының тілегін,<br>
+                    Бүкіл Қыпшақ тіледі.</p>
+
+                    <p>Өзі алты жасында,<br>
+                    Кәмшат бөркі басында,<br>
+                    Тобылғы торы ат астында,<br>
+                    Қаршығасы қолында,<br>
+                    Тазысын ерткен соңында,<br>
+                    Жеті пірге сыйынып,<br>
+                    Баратұғын жолында,<br>
+                    Тоқтарбайдың жылқыда,<br>
+                    Тоқсан құлы бар еді,<br>
+                    Тоқсанының бастығы,<br>
+                    Естеміс деген ер еді.</p>
+
+                    <p>Естемісті көруге,<br>
+                    Жылқыға бала жөнелді.<br>
+                    Жылқыға бала барғасын,<br>
+                    Баурап малын алғасын,<br>
+                    Тоқсан құл мен Естеміс,<br>
+                    Риза тауып қалғасын,<br>
+                    Қолғанат пен құйрыққа,<br>
+                    Енді тоқсан кенелді.</p>
+
+                    <p>Қобыландыны барғасын,<br>
+                    Естеміс ерін баулыды.<br>
+                    Күнде киік аулайды,<br>
+                    Кездессе жауын жаулайды,<br>
+                    Жылқыда жатып Қобыланды,<br>
+                    Екпіні оттай қаулайды.</p>
+
+                    <p>Қаршығасы қолында,<br>
+                    Құмай тазы соңында,<br>
+                    Естеміспен екеуі,<br>
+                    Қонып жатса бір тауда,<br>
+                    Намазшамнан өткенде,<br>
+                    Құтпан мезгіл жеткенде,<br>
+                    Құлағына батырдың,<br>
+                    Бір дауыс кеп шулайды.</p>
+
+                    <p>Арғы астында сол таудың,<br>
+                    Бұрқыраған бу шықты,<br>
+                    Шуылдаған шу шықты.<br>
+                    «Бұл не қылған дауыс?» – деп,<br>
+                    Естемістен сұрайды,<br>
+                    Айтпасына қоймайды.</p>
+
+                    <p>Сонда Естеміс сөйлейді,<br>
+                    Сөйлегенде былай дейді:<br>
+                    «Арғы астында бұл таудың,<br>
+                    Қызылбастың елі бар,<br>
+                    Жасыл байтақ жері бар,<br>
+                    Айдынды шалқар көлі бар,<br>
+                    Көктім Аймақ ханы бар,<br>
+                    Неше мың сан жаны бар.<br>
+                    Қанша жиған халқына,<br>
+                    Көрсетіп тұрған сәні бар.</p>
+
+                    <p>Құртқа деген қызы бар,<br>
+                    Жұртына жайған назы бар.<br>
+                    Ай астына аспанда,<br>
+                    Құрды бақан қақтырып,<br>
+                    Алтын теңге аттырып.<br>
+                    Теңгені атып түсірген –<br>
+                    Құртқаны сұлу сол алар.<br>
+                    Соның даусы бұл дауыс,<br>
+                    Көптен шыққан бұл хабар.<br>
+                    Көңілің ауып, шырағым,<br>
+                    Бұған болма ынтызар.<br>
+                    Шарға салып басыңды,<br>
+                    Бола көрме сен құмар».</p>
+
+                    <p>Қанша айтса да Естеміс,<br>
+                    Барғысы келді баланың.<br>
+                    «Түсірем, – деп, – атып дәл,<br>
+                    Кәміл пірлер болса жар».<br>
+                    Естеміс тағы сөйлейді:<br>
+                    «Қой, шырағым, жассың ғой,<br>
+                    Қабырғаң сенің қатқан жоқ,<br>
+                    Омыртқаң өсіп жеткен жоқ,<br>
+                    Жіберуге қорқамын,<br>
+                    Тілімді алсаң, рұқсат жоқ.</p>
+
+                    <p>Барғанмен кезек келмес-ті,<br>
+                    Бағып жатқан Құртқаны<br>
+                    Қырық бес кез Қызыл ер<br>
+                    Шырағым, теңдік бермес-ті».<br>
+                    Отырып бұлар кеңесті,<br>
+                    «Жықса, алар», – десіпті.<br>
+                    «Аты-тонын олжалап,<br>
+                    Аман қайтса жарар», – деп,<br>
+                    Өзінше желдей есіпті.<br>
+                    Бетіне жан қаратпай,<br>
+                    Көңілі әбден өсіпті.</p>
+
+                    <p>Бұл сөзді естіп Қобылан:<br>
+                    «Артыма жау қалдырман,<br>
+                    Берсе Құдай несіпті», –<br>
+                    Деп мініп ап атына,<br>
+                    Қызыл ерге келеді.<br>
+                    Келіп те сөйлей береді:<br>
+                    «Қобыланды келді, шықсын», – деп,<br>
+                    Дауыстап хабар береді.</p>
+
+                    <p>Шықпағасын Қызыл ер,<br>
+                    Жүгіріп үйге енеді.<br>
+                    Төсекте жатып Қызыл ер,<br>
+                    Қобыландыны көреді.<br>
+                    «Аяғыммен күрес», – деп,<br>
+                    Бір аяғын береді.<br>
+                    Алпыс құлаш ала арқан,<br>
+                    Қызыл ердің ілулі<br>
+                    Босағада тұр еді.</p>
+
+                    <p>Іліп алып аяққа,<br>
+                    Мініп алып торы атқа<br>
+                    Дүрілдетіп жөнелді.<br>
+                    Қызыл ерді сүйретті,<br>
+                    Сүйреткі қылып күйретті.<br>
+                    Ішінде шеңгел, тікенге<br>
+                    Өкпе, бауырын түйретті.<br>
+                    Тақымға салып сүйретіп,<br>
+                    Қабырғасын күйретті.</p>
+
+                    <p>Мінген аты ала еді,<br>
+                    Қылпық жүнді қара еді.<br>
+                    Тоқтау салды Естеміс,<br>
+                    Жібергісі келмей баланы.<br>
+                    «Батаңды бер, көке», – деп<br>
+                    Алдын-артын орады.<br>
+                    Барғысы келіп батырдың,<br>
+                    Тоқтамайды табаны.</p>
+
+                    <p>Естемістей ерінің,<br>
+                    Таусылған соң амалы,<br>
+                    Батасын беріп, қол жайып,<br>
+                    Үстіне сауыт кигізді.<br>
+                    Жанына байлап болатты,<br>
+                    Беліне садақ ілгізді.<br>
+                    Тобылғы меңді торы атпен,<br>
+                    Дөңгелентіп жөнелді.<br>
+                    Атып жатқан жеріне,<br>
+                    Іркілместен келеді.</p>
+
+                    <p>Келгендігін баланың,<br>
+                    Көктім Аймақ көреді.<br>
+                    Айбатынан сестеніп,<br>
+                    Баланы келген сынады.<br>
+                    Қобыландыдай торығы:<br>
+                    «Қазақтың ері келді», – деп,<br>
+                    Көктім Аймақ патшасы,<br>
+                    Кезекті бұған береді.<br>
+                    Кәміл пірлер жебеді,<br>
+                    Қолына алып толғанып,<br>
+                    Қозы жауырын жебені.<br>
+                    Ат үстінен шіреніп,<br>
+                    Сонда тұрып тартады,<br>
+                    Кәміл пірлер сенгені.</p>
+
+                    <p>Құрулы бақан басында<br>
+                    Екі бөліп ұшырды.<br>
+                    Айтқан серттен қайта алмай,<br>
+                    Отыз күн ұдай тойын қып,<br>
+                    Көктім Аймақ атасы<br>
+                    Қыз Құртқаны бергені.</p>
+
+                    <p>Менсінбеген дұшпанды<br>
+                    Ақылын тауып үйретті.<br>
+                    Көкборі қылып дұшпанды,<br>
+                    Тау мен тасты күңірентті.<br>
+                    Қорлықпенен өлсін деп,<br>
+                    Тасқа салып боршалап,<br>
+                    Қызыл ерді еңіретті.<br>
+                    Домаланды жерге бас,<br>
+                    Кеудесінен жан кетті.</p>
+
+                    <p>Қобыланды сынды жас бала,<br>
+                    Істі орнына келтіріп,<br>
+                    Құртқаға келіп сөйледі,<br>
+                    Көңілі ердің желпініп.<br>
+                    «Сұлтаным не қылды екен», – деп,<br>
+                    Құртқа сұлу жүгіріп,<br>
+                    Алдынан шыққан ентігіп,<br>
+                    Көктімге хабар берседі.</p>
+
+                    <p>Дұшпанынан құтылып,<br>
+                    Көңілдері жайланды.<br>
+                    Жөнелтуге Құртқаны,<br>
+                    Көктім Аймақ ойланды.<br>
+                    Алтынмен ішін безеген,<br>
+                    Сырты күміс ақ отау<br>
+                    Келістіріп түзеген,<br>
+                    Арттыруға сайланды.<br>
+                    Қырық түйе қазына,<br>
+                    Қырық құл мен қырық күң,<br>
+                    Қосып берді қызына.<br>
+                    Атасымен қоштасып,<br>
+                    Құртқаны алып ұзатып,<br>
+                    Елге қарай жөнелді...</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <span class="ticker-item">«Қарақыпшақ Қобыланды, Атасы мұның Тоқтарбай...»</span>
+            <span class="ticker-item">«Арыстан туған Қобылан, Қазынадан қамқа киеді...»</span>
+            <span class="ticker-item">«Жылқыда жатып Қобыланды, Екпіні оттай қаулайды...»</span>
+            <span class="ticker-item">«Артыма жау қалдырман, Берсе Құдай несіпті...»</span>
+            <span class="ticker-item">«Кәміл пірлер жебеді, Қозы жауырын жебені...»</span>
+            <span class="ticker-item">«Көкбөрі қылып дұшпанды, Тау мен тасты күңірентті...»</span>
+        </div>
+    </div>
+
+    <script>
+        let audioCtx;
+        
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSfx(type) {
+            initAudio();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            const now = audioCtx.currentTime;
+            
+            if (type === 'hover') {
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(600, now);
+                oscillator.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                oscillator.start(now);
+                oscillator.stop(now + 0.05);
+            } 
+            else if (type === 'cube-click') {
+                // Кубты басқандағы футуристік дыбыс
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(440, now);
+                oscillator.frequency.exponentialRampToValueAtTime(880, now + 0.1);
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                oscillator.start(now);
+                oscillator.stop(now + 0.2);
+            }
+        }
+
+        function switchTab(tabId) {
+            playSfx('hover'); 
+            
+            const tabs = ['cube', 'poem'];
+            tabs.forEach(id => {
+                document.getElementById('tab-' + id).classList.add('hidden');
+                document.getElementById('btn-' + id).classList.remove('active');
+            });
+
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        const cubeData = {
+            1: { title: "Суретте", desc: "Қобыландыны сипаттаңыз." },
+            2: { title: "Салыстыр", desc: "Қобыландыны басқа кейіпкермен немесе қасиетпен салыстыр." },
+            3: { title: "Зертте", desc: "Қобыландының мәтіндегі рөлін зертте." },
+            4: { title: "Талда", desc: "Оның әрекетінің себептерін талда." },
+            5: { title: "Қолдан", desc: "Оның қасиеттерін қазіргі өмірде қолдану туралы ойыңды айт." },
+            6: { title: "Дәлелде", desc: "Қобыландының батырлығын дәлелдейтін дәйектер келтір." }
+        };
+
+        const cubeModal = document.getElementById('cube-modal');
+        const cubeModalContent = document.getElementById('cube-modal-content');
+
+        function showCubeTask(id) {
+            playSfx('cube-click');
+            
+            document.getElementById('cube-number').innerText = id;
+            document.getElementById('cube-title').innerText = cubeData[id].title;
+            document.getElementById('cube-desc').innerText = cubeData[id].desc;
+            
+            cubeModal.classList.remove('hidden');
+            
+            // Анимацияның жұмыс істеуі үшін кішкене кідіріс
+            setTimeout(() => {
+                cubeModal.classList.remove('opacity-0');
+                cubeModalContent.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeCubeModal() {
+            playSfx('hover');
+            cubeModal.classList.add('opacity-0');
+            cubeModalContent.classList.add('scale-95');
+            
+            // CSS transition уақыты аяқталған соң жасыру
+            setTimeout(() => {
+                cubeModal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
